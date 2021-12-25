@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner:false,
       home:AnimatedSplashScreen(
-       duration: 9000,
+       duration:5000,
         splash:Image.asset(
         'assets/logo2.jpeg'),
         nextScreen:Splash(),
