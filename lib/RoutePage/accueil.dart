@@ -76,6 +76,8 @@ class _ListViewState extends State<ListView> {
     "Avoir les nouvelles sur la santé",
     "Avoir les nouvelles sur la santé"
   ];
+
+  var _actu;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.6;
@@ -98,59 +100,80 @@ class _ListViewState extends State<ListView> {
           ),
           itemCount: title.length,
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                //une fonction dialog qui va retourner une fonction popup
-                showDialogFunc(context, img[index], title[index], lien[index]);
-              },
-              child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        child: Image.asset(img[index]),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        title[index],
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        width: width,
-                        child: Text(
-                          para[index],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black38,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 2.0,
-                            spreadRadius: 1,
-                            offset: Offset(2.0, 2))
-                      ]),
-                  margin: EdgeInsets.all(5)),
-            );
+            return  _griditem(index);
           },
         ),
       ),
+    );
+  }
+
+  _searchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        decoration: InputDecoration(hintText: "Search..."),
+        onChanged: (text) {
+          text = text.toLowerCase();
+          setState(() {
+            _actu = _actu.where((titre) {
+              var titreTitle = titre.title.toLowerCase();
+              return titreTitle.contains(text);
+            }).toList();
+          });
+        },
+      ),
+    );
+  }
+
+  _griditem(index) {
+    return GestureDetector(
+      onTap: () {
+        //une fonction dialog qui va retourner une fonction popup
+        showDialogFunc(context, img[index], title[index], lien[index]);
+      },
+      child: Container(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                child: Image.asset(img[index]),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                title[index],
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: Text(
+                  para[index],
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black38,
+                  ),
+                ),
+              )
+            ],
+          ),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 2.0,
+                    spreadRadius: 1,
+                    offset: Offset(2.0, 2))
+              ]),
+          margin: EdgeInsets.all(5)),
     );
   }
 }
