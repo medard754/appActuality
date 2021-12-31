@@ -1,6 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:stage/RoutePage/article.dart';
+import 'package:stage/helpers/utils.dart';
 import 'package:stage/main.dart';
+import 'package:stage/model/categorie.dart';
+/*
+var title = [
+  "Santé",
+  "Business",
+  "Sport",
+  "Musique",
+  "Communication",
+  "Méteooo",
+  "Santé",
+  "Business",
+  "Sport",
+  "Musique",
+  "Communication",
+  "Méteooo"
+];
+var lien = [
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter",
+  "consulter"
+];
+var img = [
+  "assets/logo.png",
+  "assets/logo2.jpeg",
+  "assets/logo.png",
+  "assets/logo2.jpeg",
+  "assets/logo.png",
+  "assets/logo2.jpeg",
+  "assets/logo.png",
+  "assets/logo2.jpeg",
+  "assets/logo.png",
+  "assets/logo2.jpeg",
+  "assets/logo.png",
+  "assets/logo2.jpeg",
+];
+var para = [
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé",
+  "Avoir les nouvelles sur la santé"
+];*/
 
 class Splash extends StatelessWidget {
   const Splash({Key? key}) : super(key: key);
@@ -17,69 +77,14 @@ class ListView extends StatefulWidget {
   @override
   _ListViewState createState() => _ListViewState();
 }
-
+List<Categorie> categories = Utils.getMockedCategorie();
 class _ListViewState extends State<ListView> {
   //var img = ["Santé","Business","Sport","Musique","Communication","Méteo"];
-  var title = [
-    "Santé",
-    "Business",
-    "Sport",
-    "Musique",
-    "Communication",
-    "Méteooo",
-    "Santé",
-    "Business",
-    "Sport",
-    "Musique",
-    "Communication",
-    "Méteooo"
-  ];
-  var lien = [
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter",
-    "consulter"
-  ];
-  var img = [
-    "assets/logo.png",
-    "assets/logo2.jpeg",
-    "assets/logo.png",
-    "assets/logo2.jpeg",
-    "assets/logo.png",
-    "assets/logo2.jpeg",
-    "assets/logo.png",
-    "assets/logo2.jpeg",
-    "assets/logo.png",
-    "assets/logo2.jpeg",
-    "assets/logo.png",
-    "assets/logo2.jpeg",
-  ];
-  var para = [
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé",
-    "Avoir les nouvelles sur la santé"
-  ];
-
+ 
   var _actu;
   @override
   Widget build(BuildContext context) {
+   
     double width = MediaQuery.of(context).size.width * 0.6;
     return Scaffold(
       appBar: AppBar(
@@ -98,38 +103,24 @@ class _ListViewState extends State<ListView> {
             crossAxisCount: 2,
             mainAxisSpacing: 2,
           ),
-          itemCount: title.length,
+          itemCount: categories.length,
           itemBuilder: (context, index) {
-            return  _griditem(index);
+            return _griditem(index);
           },
         ),
       ),
     );
   }
 
-  _searchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(hintText: "Search..."),
-        onChanged: (text) {
-          text = text.toLowerCase();
-          setState(() {
-            _actu = _actu.where((titre) {
-              var titreTitle = titre.title.toLowerCase();
-              return titreTitle.contains(text);
-            }).toList();
-          });
-        },
-      ),
-    );
-  }
-
+  
   _griditem(index) {
     return GestureDetector(
       onTap: () {
         //une fonction dialog qui va retourner une fonction popup
-        showDialogFunc(context, img[index], title[index], lien[index]);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => NewsChoix(categories[index].title)));
       },
       child: Container(
           padding: const EdgeInsets.all(10.0),
@@ -139,13 +130,13 @@ class _ListViewState extends State<ListView> {
               Container(
                 width: 50,
                 height: 50,
-                child: Image.asset(img[index]),
+                child: Image.asset(categories[index].img),
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
-                title[index],
+                categories[index].title,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               SizedBox(
@@ -154,7 +145,7 @@ class _ListViewState extends State<ListView> {
               Container(
                 width: MediaQuery.of(context).size.width * 0.6,
                 child: Text(
-                  para[index],
+                  categories[index].des,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black38,
@@ -178,72 +169,3 @@ class _ListViewState extends State<ListView> {
   }
 }
 
-showDialogFunc(context, img, title, lien) {
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return Center(
-          child: Material(
-            type: MaterialType.transparency,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.all(15),
-              width: MediaQuery.of(context).size.width * 0.7,
-              height: MediaQuery.of(context).size.height * 0.5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.asset(img, width: 200, height: 200),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "Annuler",
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w500),
-                            textAlign: TextAlign.center,
-                          )),
-                      Spacer(
-                        flex: 1,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {},
-                          child: Text(
-                            lien,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500),
-                            textAlign: TextAlign.center,
-                          )),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        );
-      });
-}
